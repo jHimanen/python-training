@@ -59,7 +59,7 @@ def main():
     # Test 9: Create another customer to test multiple instances
     print("\n9. TESTING MULTIPLE CUSTOMER INSTANCES")
     print("-" * 30)
-    customer2 = Customer("Jane Smith", "jane.smith@example.com", "0987654321")
+    customer2 = Customer("Jari Vänttinen", "jva@profium.com", "0987654321")
     print(f"Created second customer: {customer2}")
     print(f"Second customer has credit account: {customer2.has_credit_account()}")
     
