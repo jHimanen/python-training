@@ -17,5 +17,6 @@ services:
       retries: 10
     volumes:
       - dbdata:/var/lib/mysql
+      - ./docker/mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 volumes:
   dbdata:
