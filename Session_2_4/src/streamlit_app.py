@@ -15,12 +15,8 @@ def api() -> httpx.Client:
 def fetch_users():
     # You don't have a list endpoint in your API; fetch recent via a cheap trick:
     # If you add GET /users, use it here. For now we’ll just try ids 1..50.
-    users = []
     with api() as c:
-        for uid in range(1, 51):
-            r = c.get(f"/users/{uid}")
-            if r.status_code == 200:
-                users.append(r.json())
+        users = c.get("/users").json()
     return pd.DataFrame(users)
 
 @st.cache_data(ttl=5, show_spinner=False)
@@ -90,6 +86,22 @@ with st.expander("📝 Create task", expanded=True):
                 else:
                     st.error(f"Error: {r.status_code} {r.text}")
 
+# --- Toggle completion inline ---
+st.markdown("### Toggle completion")
+task_id_to_toggle = st.number_input("Task ID", min_value=1, step=1, value=1)
+new_state = st.selectbox("Set completed to:", [True, False], index=0)
+if st.button("Update task"):
+    with api() as c:
+        r = c.patch(f"/tasks/{int(task_id_to_toggle)}", json={"completed": bool(new_state)})
+        if r.status_code == 200:
+            st.success("Task updated.")
+            invalidate_cache()
+            time.sleep(0.2)
+        elif r.status_code == 404:
+            st.error("Task not found")
+        else:
+            st.error(f"Error: {r.status_code} {r.text}")
+
 # --- Filter + list tasks ---
 st.subheader("Tasks")
 col1, col2, col3 = st.columns([1,1,2])
@@ -112,18 +124,3 @@ if tasks_df.empty:
 else:
     st.dataframe(tasks_df.sort_values("id", ascending=False), width='stretch', hide_index=True)
 
-# --- Toggle completion inline ---
-st.markdown("### Toggle completion")
-task_id_to_toggle = st.number_input("Task ID", min_value=1, step=1, value=1)
-new_state = st.selectbox("Set completed to:", [True, False], index=0)
-if st.button("Update task"):
-    with api() as c:
-        r = c.patch(f"/tasks/{int(task_id_to_toggle)}", json={"completed": bool(new_state)})
-        if r.status_code == 200:
-            st.success("Task updated.")
-            invalidate_cache()
-            time.sleep(0.2)
-        elif r.status_code == 404:
-            st.error("Task not found")
-        else:
-            st.error(f"Error: {r.status_code} {r.text}")

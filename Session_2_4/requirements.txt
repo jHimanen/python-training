@@ -24,7 +24,6 @@ build==1.2.2.post1
 cachetools==5.5.2
 certifi==2025.8.3
 charset-normalizer==3.4.3
-chromadb==1.0.9
 click==8.2.1
 cohere==5.17.0
 colorama==0.4.6
@@ -91,8 +90,6 @@ jsonschema-specifications==2025.4.1
 jusText==3.0.2
 kiwisolver==1.4.8
 kubernetes==32.0.1
-langchain==0.3.25
-langchain-community==0.3.24
 langchain-core==0.3.60
 langchain-openai==0.3.17
 langchain-text-splitters==0.3.8

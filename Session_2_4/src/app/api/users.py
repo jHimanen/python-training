@@ -14,6 +14,10 @@ def create_user(payload: UserCreate, db: Session = Depends(get_db)):
     db.add(user); db.commit(); db.refresh(user)
     return user
 
+@router.get("", response_model=list[UserOut])
+def get_users(db: Session = Depends(get_db)):
+    return db.query(User).order_by(User.id.desc()).all()
+
 @router.get("/{user_id}", response_model=UserOut)
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user = db.get(User, user_id)
